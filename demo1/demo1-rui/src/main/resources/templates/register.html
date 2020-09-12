@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<script type="text/javascript" src="bootstrap3/jquery.min.js"></script>
+<script src="bootstrap3/vue.js"></script>
+</head>
+<body>
+<div id="register">
+<form id="from-register" v-on:submit.prevent="register" action="/api/v1/register">
+    <table align="center">
+        <caption>用户注册</caption>
+        <tr>
+            <td>账户名</td>
+            <td><input type="text" name="name"><span class="has-error" v-text="newName"></span></td>
+        </tr>
+        <tr>
+            <td>密码</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <td>&nbsp;&nbsp</td>
+        <td><input type="submit" value="注册"></td>
+    </table>
+</form>
+</div>
+<script>
+    let app=new Vue({
+        el:'#register',
+        data:{
+            newName:null
+        },
+        methods:{
+            register:function () {
+              //  alert("准备注册!");
+               app.newName=null;
+               $.ajax({
+                  url:'/api/v1/register',
+                  data:$('#from-register').serialize(),
+                   type:'post',
+                   dataType:'json',
+                   success:function (json) {
+                      console.log(json);
+                      if (json.state==2000){
+                          alert("注册成功!");
+                      }else if(json.state==4001||json.state==4000){
+                          app.newName=json.message;
+                      }else{
+                          alert("注册失败，服务器忙");
+                      }
+
+                   }
+
+               });
+            }
+        }
+    });
+</script>
+</body>
+</html>
